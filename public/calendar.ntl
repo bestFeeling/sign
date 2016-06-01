@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" charset="utf-8" />
+	<link rel="stylesheet" type="text/css" href="css/calendar.css">
+<style type="text/css">
+html {
+	font: 500 14px 'roboto';
+	color: #333;
+	background-color: #fafafa;
+}
+a {
+	text-decoration: none;
+}
+ul, ol, li {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+li > p {
+	color: rgb(91,157,241);
+	font-size: 16px;
+}
+#demo {
+	width: 300px;
+	margin: 10px auto;
+}
+p {
+	margin: 0;
+}
+.record  span {
+	margin-left: 15px;
+}
+.record {
+	border-top: 1px solid #e3e3e3;
+}
+.record > li {
+	margin-top: 5px;
+	padding-left: 15px;
+	padding-bottom: 5px;
+	border-bottom: 1px solid #eee;
+}
+.record > li :first {
+	border-top: 1px solid #eee;
+}
+</style>
+</head>
+<body>
+	<div id="demo">
+	 	<div id="ca"></div>
+	  	<ul class="record">
+	  		<li>
+	  			
+	  		</li>
+	  	</ul>
+	</div>
+
+	<script type="text/javascript">
+	var mydata = #data#;
+	</script>
+	<script type="text/javascript" src="js/jquery.js"></script>
+	<script type="text/javascript" src="js/calendar.js"></script> 
+	<script>
+		function getData(date){
+	    	var st = new Date(date)
+	        	date.setDate(parseInt(date.getDate()) + 1)
+	        	var et = date
+	        	var url = '/signlog?uid='+mydata.uid+'&sid='+mydata.sid+'&start_time='+st+'&end_time='+et
+	            $('.record')[0].innerHTML = ''
+	            $.ajax({
+	            	type: 'GET',
+	            	url: url,
+	            	success: function(data){
+	            		var data = data.data
+	            		for(var i in data){
+	            			var time = new Date(data[i].created_at)
+	            			var h = time.getHours()
+	            			var m = time.getMinutes()
+	            			m = m < 10 ? '0' + m : m
+	            			$('.record')[0].innerHTML += 
+	            			['<li>',
+	            				'<p>',h,': ',m, '<span>打卡成功</span></p>',
+	            			 '</li>'
+	            			].join('')
+	            		}
+	            	},
+	            	error: function(e){
+	            		alert('发生错误	')
+	            	}
+	            })
+	    }
+	    $('#ca').calendar({
+	        width: 320,
+	        height: 320,
+	        data: [
+				{
+				  date: '2015/12/24',
+				  value: 'Christmas Eve'
+				},
+				{
+				  date: '2015/12/25',
+				  value: 'Merry Christmas'
+				},
+				{
+				  date: '2016/01/01',
+				  value: 'Happy New Year'
+				}
+			],
+	        onSelected: function (view, date, data) {
+	        	getData(date)
+	        }
+	    });
+	    window.onload = function(){
+	    	var now = new Date()
+	    	now.setHours(0);
+	    	now.setMinutes(0)
+	    	getData(now)
+	    }
+	</script>
+</body>
+
+</html>
